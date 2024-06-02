@@ -1,8 +1,9 @@
+import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import React, { Dispatch } from "react";
 
 export type ProfileProps = {
   selectedImage: string | null;
-  handleImageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleImageChange: (event: React.ChangeEvent<HTMLInputElement>) => void | undefined;
   setDataForm: Dispatch<React.SetStateAction<UserDataForm>>;
 }
 
@@ -21,9 +22,9 @@ export type UserDataForm = {
 interface CardComponentProps {
   title: string,
   children?: React.ReactNode,
-  submitHandler?: (event: React.FormEvent<HTMLFormElement>) => void,
-  handleImageChange?: (event: React.ChangeEvent<HTMLInputElement>) => void,
-  selectedImage?: string | null | undefined,
+  submitHandler?: (event: React.FormEvent<HTMLFormElement>) => void | undefined,
+  handleImageChange?: (event: React.ChangeEvent<HTMLInputElement>) => void | undefined,
+  selectedImage?: string | null | StaticImport,
   setDataForm?: Dispatch<React.SetStateAction<UserDataForm>>
 }
 
@@ -34,7 +35,7 @@ export interface CardComponentPropsInterest extends CardComponentProps {
 
 export interface ContentCardPropsAbout extends CardComponentProps {
   isEditable: boolean
-  setIsEditable: (isEditable: boolean) => void
+  setIsEditable: (isEditable: boolean) => void;
 }
 
 export interface FormProps {
@@ -43,10 +44,20 @@ export interface FormProps {
   selectedImage: string | null | undefined
   setDataForm: Dispatch<React.SetStateAction<UserDataForm>>
 }
+export type DataAbout = {
+  displayName: '',
+  gender: '',
+  date: '',
+  height: 0,
+  weight: 0,
+  selectedImage: null,
+  zodiac: '',
+  horoscope: '',
+};
 
 export type ContentCardProps = {
   label: string;
-  value: string;
+  value: string | number;
 }
 
 export type ZodiacSignValue = {
@@ -68,5 +79,6 @@ export type AuthLayoutsProps = {
   children: React.ReactNode,
   submitHandler: any,
   path: string,
-  justify?: string
+  justify?: string,
+  isLoading: boolean,
 }

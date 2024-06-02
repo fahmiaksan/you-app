@@ -1,67 +1,25 @@
 'use client'
 import Image from "next/image";
 import { BsThreeDots } from "react-icons/bs";
-import { TbZodiacVirgo } from "react-icons/tb";
 import React, { ChangeEvent, useState } from "react";
 import ButtonBack from "../../atom/ButtonBack";
-import { UserDataForm } from "@/app/type";
+import { DataAbout, UserDataForm } from "@/app/type";
 import CardComponentInterest from "../../fragmen/card/CardInterest";
-import { useAtom, useAtomValue } from "jotai/react";
+import { useAtom } from "jotai/react";
 import { atoms, atomsAbout } from "@/app/jotai/atom";
 import CardComponentAbout from "../../fragmen/card/CardAbout";
 import ContentCard from "../../fragmen/card/ContentCard/ContentCard";
-import { FaDog, FaDragon, FaHorse } from 'react-icons/fa';
-import { IoIosEgg } from 'react-icons/io';
-import { GiTigerHead, GiRabbit, GiSnake, GiGoat, GiMonkey, GiPig, GiRooster, GiRat } from 'react-icons/gi';
-import { TbZodiacAquarius, TbZodiacAries, TbZodiacCancer, TbZodiacCapricorn, TbZodiacGemini, TbZodiacLeo, TbZodiacLibra, TbZodiacPisces, TbZodiacSagittarius, TbZodiacScorpio, TbZodiacTaurus } from 'react-icons/tb'
-import { useResetAtom } from "jotai/utils";
+import { ZodiacIcon } from "../../collectionIcons/GetZodiacIcon";
+import { HoroscopeIcon } from "../../collectionIcons/GetHoroscopeIcon";
+import { age, formatDate } from "@/app/utils/formatDate/formatDate";
+import { StaticImport } from "next/dist/shared/lib/get-img-props";
 export default function Profile() {
   const [isEditable, setIsEditable] = useState(false);
-  const [dataAbout, setDataAbout] = useAtom(atomsAbout);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [dataAbout, setDataAbout] = useAtom<DataAbout[]>(atomsAbout);
+  const [selectedImage, setSelectedImage] = useState<string | StaticImport>('');
   const [interesting, setInteresting] = useState(false);
-  const [interest, setInterest] = useAtom(atoms);
-  const [file, setFile] = useState<File | null>(null);
-  const resetInterest = useResetAtom(atoms);
-  const [filePath, setFilePath] = useState('');
-  const resetData = useResetAtom(atomsAbout);
-  let ageUser = 0;
-  const iconHoroscope = {
-    "Rat": <GiRat size={20} />,
-    "Ox": <IoIosEgg size={20} />,
-    "Tiger": <GiTigerHead size={20} />,
-    "Rabbit": <GiRabbit size={20} />,
-    "Dragon": <FaDragon size={20} />,
-    "Snake": <GiSnake size={20} />,
-    "Horse": <FaHorse size={20} />,
-    "Goat": <GiGoat size={20} />,
-    "Monkey": <GiMonkey size={20} />,
-    "Rooster": <GiRooster size={20} />,
-    "Dog": <FaDog size={20} />,
-    "Pig": <GiPig size={20} />,
-  };
-  const iconZodiac = {
-    Aries: <TbZodiacAries />,
-    Taurus: <TbZodiacTaurus />,
-    Gemini: <TbZodiacGemini />,
-    Cancer: <TbZodiacCancer />,
-    Leo: <TbZodiacLeo />,
-    Virgo: <TbZodiacVirgo />,
-    Libra: <TbZodiacLibra />,
-    Scorpio: <TbZodiacScorpio />,
-    Sagittarius: <TbZodiacSagittarius />,
-    Capricorn: <TbZodiacCapricorn />,
-    Aquarius: <TbZodiacAquarius />,
-    Pisces: <TbZodiacPisces />,
-  };
-  const HoroscopeIcon = (sign: any) => {
-    const IconComponent = iconHoroscope[sign];
-    return IconComponent;
-  };
-  const ZodiacIcon = (sign: any) => {
-    const IconComponent = iconZodiac[sign];
-    return IconComponent;
-  }
+  const [interest] = useAtom(atoms);
+  const [file, setFile] = useState<File | null>();
   const [dataForm, setDataForm] = useState<UserDataForm>({
     displayName: '',
     gender: '',
@@ -74,48 +32,42 @@ export default function Profile() {
   });
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
-      setSelectedImage(URL.createObjectURL(event.target.files[0]));
-      setFile(event.target.files[0]);
-      setDataForm((prev: any) => ({
+      const file = event.target?.files[0];
+      const imageUrl = URL.createObjectURL(event.target.files[0]);
+      setSelectedImage(imageUrl);
+      setDataForm((prev) => ({
         ...prev,
-        selectedImage: URL.createObjectURL(event.target.files[0]),
+        selectedImage: imageUrl,
       }));
+      setFile(file);
     }
   };
 
-  function formatDate(dateString: string) {
-    let date = dateString.split("-");
-    const birthday = new Date(dateString);
-    const now = new Date();
-    let age = now.getFullYear() - birthday.getFullYear();
-    let newDate = `${date[2]} / ${date[1]} / ${date[0]} (age ${age})`;
-    return newDate;
-  }
-  console.log(interest);
 
-  const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+  const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append('file', file);
+    console.log(e);
+    setDataAbout(() => {
+      const { displayName, gender, date, height, weight, selectedImage, zodiac, horoscope } = dataForm;
 
-    const res = await fetch('/api/upload', {
-      method: 'POST',
-      body: formData,
-    });
+      const newDataAbout = {
+        displayName,
+        gender,
+        date,
+        height,
+        weight,
+        selectedImage,
+        zodiac,
+        horoscope,
+      };
 
-    setIsEditable(false);
-    const result = await res.json();
-    setFilePath(result.filePath);
-    setDataAbout((prev: any) => [dataForm]);
-  }
+      return [newDataAbout];
+    }
+    );
+    setIsEditable(!isEditable)
+  };
   return (
     <main className="flex flex-col w-full py-20 space-y-6 overflow-hidden bg-[#09141A]">
-      <button onClick={resetData} className="z-10">
-        reset
-      </button>
-      <button onClick={resetInterest} className="z-10">
-        reset
-      </button>
       <ButtonBack justify="justify-between">
         <h1>{
           dataAbout.length ?
@@ -124,21 +76,41 @@ export default function Profile() {
         }</h1>
         <BsThreeDots size={16} />
       </ButtonBack>
-      <div className={`min-w-52 ${dataAbout.length ? 'bg-slate-700/20' : ''} mx-3 relative flex flex-col space-y-4 justify-end min-h-72 rounded-xl text-white bg-center object-contain`}>
-        <Image src={
+      <div
+        className={`min-w-52 ${dataAbout.length ? 'bg-slate-700/20' : ''} mx-3 relative flex flex-col justify-end h-96 rounded-xl text-white bg-center object-contain`}
+      >
+        {
           dataAbout.length ?
-            filePath
-            : ''
+
+            <div className="absolute w-full h-full">
+              <Image src={
+                dataAbout[0].selectedImage
+              }
+                width={50}
+                height={30}
+                alt={`${dataAbout.length ? 'Image' : 'Image Not Found'}`}
+                className="w-full h-full object-cover rounded-xl absolute" />
+            </div>
+            :
+            ''
         }
-          alt="image" priority fill={true} className="w-full rounded-xl z-0 object-cover bg-center" />
-        <span className="bg-gradient-to-t absolute z-20 w-full h-full rounded-xl from-[rgba(0,0,0,0.7)] via-[rgba(0,0,0,0)] to-[rgba(0,0,0,1)]"></span>
+        {
+          dataAbout.length ?
+            <span className="bg-gradient-to-t absolute z-20 w-full h-full rounded-xl from-[rgba(0,0,0,0.7)] via-[rgba(0,0,0,0)] to-[rgba(0,0,0,1)]"></span>
+            :
+            <span className="bg-slate-700/20 flex items-end p-4 rounded-xl w-full h-full">
+              <p className="font-bold text-xl">
+                @johndoe123
+              </p>
+            </span>
+        }
         <div className="flex flex-col space-y-1 z-30 px-4">
           <h1 className="font-bold text-xl">
             {
               dataAbout.length ?
-                `@${dataAbout[0].displayName}, ${formatDate(dataAbout[0].date)}`
+                `@${dataAbout[0].displayName}, ${age(dataAbout[0].date)}`
                 :
-                '@Johndoe123'
+                ''
             }
           </h1>
           {
@@ -152,13 +124,13 @@ export default function Profile() {
             <div className="text-center text-white flex z-30 px-4 pb-4 space-x-4 text-lg">
               <p className="stroke-neutral-600 backdrop-blur-xl w-max flex items-center gap-2 rounded-full px-3 py-2 font-semibold">
                 {HoroscopeIcon(dataAbout[0].horoscope)}
-                {dataAbout[0].zodiac}
+                {dataAbout[0].horoscope}
               </p>
               <p
                 className="stroke-neutral-600 backdrop-blur-xl w-max flex items-center gap-2 rounded-full px-3 py-2 font-semibold"
               >
-                {ZodiacIcon(dataAbout[0].horoscope)}
-                {dataAbout[0].horoscope}
+                {ZodiacIcon(dataAbout[0].zodiac)}
+                {dataAbout[0].zodiac}
               </p>
             </div>
             :
@@ -201,7 +173,7 @@ export default function Profile() {
                 {
                   interest.map((item: any, index: any) => (
                     <p
-                      className="rounded-full py-2 px-3 bg-gray-700 text-white text-xl"
+                      className="rounded-full py-2 px-3 bg-gray-700 text-white text-lg"
                       key={index}
                     >
                       {

@@ -6,7 +6,7 @@ import { AuthLayoutsProps } from "@/app/type";
 import ButtonBack from "../../atom/ButtonBack";
 import ButtonAuth from "../../auth/buttonAuth/Button";
 
-export default function AuthLayout({ valid, children, submitHandler, path, justify }: AuthLayoutsProps) {
+export default function AuthLayout({ valid, isLoading, children, submitHandler, path, justify }: AuthLayoutsProps) {
   const pathname = usePathname();
   return (
     <div className="text-white w-full flex flex-col overflow-hidden mx-auto h-screen z-10 bg-three-gradient-color relative">
@@ -16,7 +16,7 @@ export default function AuthLayout({ valid, children, submitHandler, path, justi
         <p className="text-xl px-5 mb-4 font-bold">{path}</p>
         <form className="space-y-4 mb-12" onSubmit={submitHandler}>
           {children}
-          <ButtonAuth valid={valid} />
+          <ButtonAuth valid={valid} isLoading={isLoading} />
         </form>
         <div className="w-full text-center ">
           <p className="text-base">

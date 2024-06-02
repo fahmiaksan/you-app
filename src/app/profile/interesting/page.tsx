@@ -10,30 +10,33 @@ export default function InterestingPage() {
   const [input, setInput] = useState<string>('');
   const { replace } = useRouter();
   const [interest, setInterest] = useAtom(atoms);
-  const addTag = () => {
+  const addInterest = () => {
     if (input.trim() !== '' && !tags.includes(input.trim())) {
+      setInterest((prev: any) => [
+        ...prev,
+        input.trim(),
+      ])
       setTags([...tags, input.trim()]);
       setInput('');
     }
   };
 
-  const removeTag = (tagToRemove: string) => {
+  const removeInterest = (tagToRemove: string) => {
     setTags(tags.filter(tag => tag !== tagToRemove));
   };
-  const handleInputChange = (e: any) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
   };
-  const handleKeyPress = (e: any) => {
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' || e.key === ',') {
-      addTag();
+      e.preventDefault();
+      addInterest();
     }
   };
 
   const handleInterestContext = () => {
-    setInterest((prev: any) => [...prev, tags]);
     replace('/profile');
-  }
-  console.log(input);
+  };
   return (
     <div className="relative text-white w-full flex flex-col overflow-hidden mx-auto h-screen z-10 bg-three-gradient-color">
       <span className="absolute h-[95vw] w-[60vh] min-w-[350px] top-0 blur-[100px] left-20 bg-[#1F4247] z-0"></span>
@@ -63,7 +66,7 @@ export default function InterestingPage() {
             >
               {tag}
               <button
-                onClick={() => removeTag(tag)}
+                onClick={() => removeInterest(tag)}
                 className="cursor-pointer"
               >
                 x

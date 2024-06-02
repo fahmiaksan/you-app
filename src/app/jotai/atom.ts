@@ -1,3 +1,4 @@
 import { atomWithStorage } from 'jotai/utils'
-export const atoms = atomWithStorage('interest', []);
-export const atomsAbout = atomWithStorage('about', []);
+import { DataAbout } from '../type';
+export const atoms = atomWithStorage<string[]>('interest', []);
+export const atomsAbout = atomWithStorage<DataAbout[]>('about', []);

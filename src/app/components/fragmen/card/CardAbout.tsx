@@ -3,8 +3,16 @@ import { PiPencilSimpleLine } from "react-icons/pi";
 import FieldProfile from "../formProfile/Index";
 import React, { useRef } from "react";
 
-export default function CardComponentAbout({ title, isEditable, setIsEditable, children, submitHandler, handleImageChange, selectedImage, setDataForm, }: ContentCardPropsAbout) {
-  const ref = useRef(null);
+export default function CardComponentAbout({
+  title,
+  isEditable,
+  setIsEditable,
+  children,
+  submitHandler,
+  handleImageChange,
+  selectedImage,
+  setDataForm,
+}: ContentCardPropsAbout) {
   return (
     <div className="bg-slate-700/20 px-5 py-5 mx-3 rounded-xl space-y-6 relative">
       <div className="flex justify-between">
@@ -31,7 +39,6 @@ export default function CardComponentAbout({ title, isEditable, setIsEditable, c
                 selectedImage={selectedImage}
                 setDataForm={setDataForm}
               />
-
             </form>
         }
       </div>

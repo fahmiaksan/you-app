@@ -88,7 +88,7 @@ export default function FieldProfile({ selectedImage, handleImageChange, setData
           id="Horoscope"
           name="Horoscope"
           value={
-            horoscope ? horoscope : "--"
+            horoscope
           }
           disabled
           required
