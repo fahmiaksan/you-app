@@ -12,12 +12,11 @@ export async function login(req: any) {
       },
       body: req,
     });
-    if (!request.ok) throw new Error('Your data not found');
     const data = await request.json();
-    cookies().set('auth-token', data?.access_token, { httpOnly: true });
-    const local = JSON.stringify({ token: `${data.access_token}` })
-    localStorage.setItem('auth-token', local);
-    console.log(cookies().get('auth-token'));
+    const token = await data?.access_token
+    localStorage.setItem('auth-token', req);
+    if (!request.ok) console.log('Your data not found');
+    cookies().set('auth-token', token, { httpOnly: true });
     return NextResponse.json({ data })
   } catch (error) {
     console.log(error);

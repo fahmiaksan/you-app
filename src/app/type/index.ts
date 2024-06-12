@@ -75,10 +75,7 @@ export type InputAuthProps = {
 }
 
 export type AuthLayoutsProps = {
-  valid: boolean,
   children: React.ReactNode,
   submitHandler: any,
   path: string,
-  justify?: string,
-  isLoading: boolean,
 }

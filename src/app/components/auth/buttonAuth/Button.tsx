@@ -1,7 +1,12 @@
+import { useEffect } from "react"
+
 export default function ButtonAuth({ valid, isLoading }: { valid: boolean, isLoading: boolean }) {
+  useEffect(() => {
+    console.log(valid);
+  }, [valid]);
   return (
-    <button className={`bg-gradient-to-tr from-cyan-400 to-blue-400 text-white font-bold rounded-xl text-center p-4 relative z-10 w-full ${valid && !isLoading && 'shadow-lg shadow-blue-400'}`}
-      disabled={!valid || isLoading}
+    <button className={`bg-gradient-to-tr from-cyan-400 to-blue-400 text-white font-bold rounded-xl text-center p-4 relative z-10 w-full ${valid && 'shadow-lg shadow-blue-400'}`}
+    disabled={!valid}
     >
       <p className="relative">
         {isLoading ? 'Submited...' : 'Login'}
